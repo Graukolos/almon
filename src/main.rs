@@ -1,3 +1,6 @@
+use almon::Almon;
+
 fn main() {
-    println!("Hello, world!");
+    let almon = Almon::new();
+    Almon::run(almon);
 }
