@@ -1,5 +1,8 @@
+#[macro_use]
+extern crate glium;
+
 mod almon;
-mod scene;
 mod renderer;
+mod scene;
 
 pub use almon::Almon;

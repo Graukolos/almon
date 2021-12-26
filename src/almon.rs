@@ -1,35 +1,31 @@
-use std::time::{
-    Duration,
-    Instant
+use crate::{
+    renderer::Renderer,
+    scene::{Scene, TestScene},
 };
 use glium::{
-    Display,
     glutin::{
+        event::{Event, WindowEvent},
+        event_loop::{ControlFlow, EventLoop},
+        window::WindowBuilder,
         ContextBuilder,
-        event::{
-            Event,
-            WindowEvent
-        },
-        event_loop::{
-            ControlFlow,
-            EventLoop
-        },
-        window::WindowBuilder
-    }
+    },
+    Display,
 };
-use crate::scene::{Scene, TestScene};
-use crate::renderer::Renderer;
+use std::{
+    rc::Rc,
+    time::{Duration, Instant},
+};
 
 pub struct Almon {
     event_loop: EventLoop<()>,
-    renderer: Renderer,
-    current_scene: Box<dyn Scene>
+    renderer: Rc<Renderer>,
+    current_scene: Box<dyn Scene>,
 }
 
 impl Almon {
     pub fn new() -> Almon {
         let (event_loop, renderer) = Almon::init_window();
-        let current_scene = Box::new(TestScene::new());
+        let current_scene = Box::new(TestScene::new(renderer.clone()));
 
         Almon {
             event_loop,
@@ -58,28 +54,26 @@ impl Almon {
                 accumulator -= dt;
             }
 
-            almon.current_scene.render(&almon.renderer);
+            almon.current_scene.render();
 
             match ev {
-                Event::WindowEvent { event,.. } => {
-                    match event {
-                        WindowEvent::CloseRequested => {
-                            *control_flow = ControlFlow::Exit;
-                        }
-                        _ => {}
+                Event::WindowEvent { event, .. } => match event {
+                    WindowEvent::CloseRequested => {
+                        *control_flow = ControlFlow::Exit;
                     }
-                }
+                    _ => {}
+                },
                 _ => {}
             }
         });
     }
 
-    fn init_window() -> (EventLoop<()>, Renderer) {
+    fn init_window() -> (EventLoop<()>, Rc<Renderer>) {
         let event_loop = EventLoop::new();
         let wb = WindowBuilder::new();
         let cb = ContextBuilder::new();
         let display = Display::new(wb, cb, &event_loop).unwrap();
-        let renderer = Renderer::new(display);
+        let renderer = Rc::new(Renderer::new(display));
 
         (event_loop, renderer)
     }
