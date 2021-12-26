@@ -1,4 +1,3 @@
-use std::ops::Sub;
 use std::time::{
     Duration,
     Instant
@@ -18,25 +17,29 @@ use glium::{
         window::WindowBuilder
     }
 };
+use crate::scene::{Scene, TestScene};
 
 pub struct Almon {
     event_loop: EventLoop<()>,
-    display: Display
+    display: Display,
+    current_scene: Box<dyn Scene>
 }
 
 impl Almon {
     pub fn new() -> Almon {
         let (event_loop, display) = Almon::init_window();
+        let current_scene = Box::new(TestScene::new());
 
         Almon {
             event_loop,
-            display
+            display,
+            current_scene
         }
     }
 
-    pub fn run(almon: Almon) {
+    pub fn run(mut almon: Almon) {
         let fps = 100;
-        let dt = Duration::from_millis(1000/fps);
+        let dt = Duration::from_millis(1000 / fps);
         let mut accumulator = Duration::from_millis(0);
         let mut frame_start = Instant::now();
 
@@ -50,8 +53,8 @@ impl Almon {
             }
 
             while accumulator > dt {
-                // TODO: update physics
-                accumulator = accumulator.sub(dt);
+                almon.current_scene.update(&dt);
+                accumulator -= dt;
             }
 
             // TODO: render game
