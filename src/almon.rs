@@ -1,12 +1,23 @@
+use std::ops::Sub;
+use std::time::{
+    Duration,
+    Instant
+};
 use glium::{
     Display,
     glutin::{
         ContextBuilder,
-        event_loop::EventLoop,
+        event::{
+            Event,
+            WindowEvent
+        },
+        event_loop::{
+            ControlFlow,
+            EventLoop
+        },
         window::WindowBuilder
     }
 };
-use glium::glutin::event_loop::ControlFlow;
 
 pub struct Almon {
     event_loop: EventLoop<()>,
@@ -24,8 +35,38 @@ impl Almon {
     }
 
     pub fn run(almon: Almon) {
-        almon.event_loop.run(move |_, _, control_flow| {
-            *control_flow = ControlFlow::Exit;
+        let fps = 100;
+        let dt = Duration::from_millis(1000/fps);
+        let mut accumulator = Duration::from_millis(0);
+        let mut frame_start = Instant::now();
+
+        almon.event_loop.run(move |ev, _, control_flow| {
+            *control_flow = ControlFlow::Poll;
+            accumulator += frame_start.elapsed();
+            frame_start = Instant::now();
+
+            if accumulator > Duration::from_millis(200) {
+                accumulator = Duration::from_millis(200);
+            }
+
+            while accumulator > dt {
+                // TODO: update physics
+                accumulator = accumulator.sub(dt);
+            }
+
+            // TODO: render game
+
+            match ev {
+                Event::WindowEvent { event,.. } => {
+                    match event {
+                        WindowEvent::CloseRequested => {
+                            *control_flow = ControlFlow::Exit;
+                        }
+                        _ => {}
+                    }
+                }
+                _ => {}
+            }
         });
     }
 
