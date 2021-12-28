@@ -80,6 +80,20 @@ pub struct RenderComponent {
 
 #[derive(Copy, Clone)]
 pub struct Vertex {
-    pub position: [f32; 3],
+    position: [f32; 3],
+}
+
+impl Vertex {
+    pub fn new2d(x: f32, y: f32) -> Vertex {
+        Vertex {
+            position: [x, y, 0.0]
+        }
+    }
+
+    pub fn new3d(x: f32, y:f32, z:f32) -> Vertex {
+        Vertex {
+            position: [x, y, z]
+        }
+    }
 }
 implement_vertex!(Vertex, position);
