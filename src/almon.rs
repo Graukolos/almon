@@ -1,24 +1,17 @@
-use crate::{
-    renderer::Renderer,
-    scene::{Scene, TestScene},
-};
-use glium::{
-    glutin::{
-        event::{Event, WindowEvent},
-        event_loop::{ControlFlow, EventLoop},
-        window::WindowBuilder,
-        ContextBuilder,
-    },
-    Display,
-};
-use std::{
-    rc::Rc,
-    time::{Duration, Instant},
-};
+use std::cell::RefCell;
+use crate::renderer::{Renderer2D, SequentialRenderer};
+use crate::scene::{Scene, TestScene};
+use glium::Display;
+use glium::glutin::ContextBuilder;
+use glium::glutin::event::{Event, WindowEvent};
+use glium::glutin::event_loop::{ControlFlow, EventLoop};
+use glium::glutin::window::WindowBuilder;
+use std::rc::Rc;
+use std::time::{Duration, Instant};
 
 pub struct Almon {
     event_loop: EventLoop<()>,
-    renderer: Rc<Renderer>,
+    renderer: Rc<RefCell<dyn Renderer2D>>,
     current_scene: Box<dyn Scene>,
 }
 
@@ -68,12 +61,12 @@ impl Almon {
         });
     }
 
-    fn init_window() -> (EventLoop<()>, Rc<Renderer>) {
+    fn init_window() -> (EventLoop<()>, Rc<RefCell<dyn Renderer2D>>) {
         let event_loop = EventLoop::new();
         let wb = WindowBuilder::new();
         let cb = ContextBuilder::new();
         let display = Display::new(wb, cb, &event_loop).unwrap();
-        let renderer = Rc::new(Renderer::new(display));
+        let renderer = Rc::new(RefCell::new(SequentialRenderer::new(display)));
 
         (event_loop, renderer)
     }
