@@ -1,7 +1,7 @@
 use crate::renderer::{create_program, Renderer2D, RenderComponent, Vertex};
 use glium::{Display, Frame, Program, Surface, VertexBuffer};
 use glium::index::{NoIndices, PrimitiveType};
-use glium::uniforms::EmptyUniforms;
+use crate::physics::TransformComponent;
 
 pub struct SequentialRenderer {
     display: Display,
@@ -31,7 +31,8 @@ impl Renderer2D for SequentialRenderer {
         frame.finish().unwrap();
     }
 
-    fn draw(&mut self, render_component: &RenderComponent) {
+    fn draw(&mut self, render_object: &(RenderComponent, TransformComponent)) {
+        let (render_component, transform_component) = render_object;
         let mut frame = self.current_frame.take().unwrap();
         frame.clear_color(0.2, 0.5, 0.3, 1.0);
         let indices = NoIndices(PrimitiveType::TrianglesList);
@@ -40,11 +41,11 @@ impl Renderer2D for SequentialRenderer {
                 &render_component.vertex_buffer,
                 &indices,
                 &self.test_program,
-                &EmptyUniforms,
+                &uniform!( x: transform_component.x),
                 &Default::default(),
             )
             .unwrap();
-        self.current_frame.insert(frame);
+        self.current_frame.replace(frame);
     }
 
     fn create_render_component(&self, mesh: Vec<Vertex>) -> RenderComponent {

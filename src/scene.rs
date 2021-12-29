@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;
 use crate::renderer::{RenderComponent, Renderer2D, Vertex};
+use crate::physics::TransformComponent;
 
 pub trait Scene {
     fn update(&mut self, dt: &Duration);
@@ -10,7 +11,7 @@ pub trait Scene {
 
 pub struct TestScene {
     renderer: Rc<RefCell<dyn Renderer2D>>,
-    triangle: RenderComponent,
+    triangle: (RenderComponent, TransformComponent)
 }
 
 impl TestScene {
@@ -19,14 +20,19 @@ impl TestScene {
         let vertex2 = Vertex::new2d(0.0, 0.5);
         let vertex3 = Vertex::new2d(0.5, -0.25);
         let mesh = vec![vertex1, vertex2, vertex3];
-        let triangle = renderer.borrow().create_render_component(mesh);
+        let triangle = (renderer.borrow().create_render_component(mesh), TransformComponent::new());
 
         TestScene { renderer, triangle }
     }
 }
 
 impl Scene for TestScene {
-    fn update(&mut self, dt: &Duration) {}
+    fn update(&mut self, dt: &Duration) {
+        self.triangle.1.x += dt.as_secs_f32()/5.0;
+        if self.triangle.1.x > 0.8 {
+            self.triangle.1.x = -0.8;
+        }
+    }
 
     fn render(&mut self) {
         self.renderer.borrow_mut().render_begin();

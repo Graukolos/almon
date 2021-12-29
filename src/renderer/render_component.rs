@@ -1,4 +1,4 @@
-use glium::{Display, VertexBuffer};
+use glium::VertexBuffer;
 
 pub struct RenderComponent {
     pub vertex_buffer: VertexBuffer<Vertex>,

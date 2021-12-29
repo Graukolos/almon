@@ -2,11 +2,12 @@ use crate::renderer::{RenderComponent, Vertex};
 use glium::{Display, Program};
 use std::fs::File;
 use std::io::Read;
+use crate::physics::TransformComponent;
 
 pub trait Renderer2D {
     fn render_begin(&mut self);
     fn render_end(&mut self);
-    fn draw(&mut self, render_component: &RenderComponent);
+    fn draw(&mut self, render_object: &(RenderComponent, TransformComponent));
 
     fn create_render_component(&self, mesh: Vec<Vertex>) -> RenderComponent;
 }
