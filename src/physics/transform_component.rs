@@ -1,15 +1,12 @@
+use cgmath::{Matrix4, SquareMatrix, Vector3};
+
 pub struct TransformComponent {
-    transform: [[f32; 4]; 4]
+    transform: Matrix4<f32>
 }
 
 impl TransformComponent {
     pub fn new() -> TransformComponent {
-        let transform = [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0]
-        ];
+        let transform = Matrix4::identity();
 
         TransformComponent {
             transform
@@ -17,12 +14,10 @@ impl TransformComponent {
     }
 
     pub fn get_transform(&self) -> [[f32; 4]; 4] {
-        self.transform
+        self.transform.into()
     }
 
-    pub fn translate(&mut self, shift: [f32; 3]) {
-        self.transform[3][0] += shift[0];
-        self.transform[3][1] += shift[1];
-        self.transform[3][2] += shift[2];
+    pub fn translate(&mut self, shift: Vector3<f32>) {
+        self.transform = Matrix4::from_translation(shift) * self.transform;
     }
 }

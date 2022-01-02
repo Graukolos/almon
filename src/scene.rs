@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;
+use cgmath::Vector3;
 use crate::renderer::{RenderComponent, Renderer2D, Vertex};
 use crate::physics::TransformComponent;
 
@@ -28,9 +29,9 @@ impl TestScene {
 
 impl Scene for TestScene {
     fn update(&mut self, dt: &Duration) {
-        self.triangle.1.translate([dt.as_secs_f32()/5.0, 0.0, 0.0]);
+        self.triangle.1.translate(Vector3::new(dt.as_secs_f32()/5.0, 0.0, 0.0));
         if self.triangle.1.get_transform()[3][0] > 1.5 {
-            self.triangle.1.translate([-3.0, 0.0, 0.0]);
+            self.triangle.1.translate(Vector3::new(-3.0, 0.0, 0.0));
         }
     }
 
