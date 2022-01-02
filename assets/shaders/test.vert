@@ -2,10 +2,8 @@
 
 in vec3 position;
 
-uniform float x;
+uniform mat4 matrix;
 
 void main() {
-    vec3 pos = position;
-    pos.x += x;
-    gl_Position = vec4(pos, 1.0);
+    gl_Position = matrix * vec4(position, 1.0);
 }
