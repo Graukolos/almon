@@ -41,7 +41,7 @@ impl Renderer2D for SequentialRenderer {
                 &render_component.vertex_buffer,
                 &indices,
                 &self.test_program,
-                &uniform!( x: transform_component.x),
+                &uniform!( matrix: transform_component.get_transform()),
                 &Default::default(),
             )
             .unwrap();
