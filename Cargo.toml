@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 glium = "0.31.0"
 cgmath = "0.18.0"
+image = "0.23.14"
