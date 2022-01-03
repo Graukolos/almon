@@ -29,10 +29,11 @@ impl TestScene {
 
 impl Scene for TestScene {
     fn update(&mut self, dt: &Duration) {
-        self.triangle.1.translate(Vector3::new(dt.as_secs_f32()/5.0, 0.0, 0.0));
-        if self.triangle.1.get_transform()[3][0] > 1.5 {
-            self.triangle.1.translate(Vector3::new(-3.0, 0.0, 0.0));
-        }
+        //self.triangle.1.translate(Vector3::new(dt.as_secs_f32()/5.0, 0.0, 0.0));
+        //if self.triangle.1.get_transform()[3][0] > 1.5 {
+        //    self.triangle.1.translate(Vector3::new(-3.0, 0.0, 0.0));
+        //}
+        self.triangle.1.rotate(dt.as_secs_f32());
     }
 
     fn render(&mut self) {
