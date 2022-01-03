@@ -9,7 +9,7 @@ pub trait Renderer2D {
     fn render_end(&mut self);
     fn draw(&mut self, render_object: &(RenderComponent, TransformComponent));
 
-    fn create_render_component(&self, mesh: Vec<Vertex>) -> RenderComponent;
+    fn create_render_component(&self, mesh: (Vec<Vertex>, Vec<u16>), texture: &str) -> RenderComponent;
 }
 
 pub fn create_program(display: &Display, vertex_shader_path: &str, fragment_shader_path: &str) -> Program {

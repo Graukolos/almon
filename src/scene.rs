@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;
-use cgmath::Vector3;
 use crate::renderer::{RenderComponent, Renderer2D, Vertex};
 use crate::physics::TransformComponent;
 
@@ -17,11 +16,12 @@ pub struct TestScene {
 
 impl TestScene {
     pub fn new(renderer: Rc<RefCell<dyn Renderer2D>>) -> TestScene {
-        let vertex1 = Vertex::new2d(-0.5, -0.5);
-        let vertex2 = Vertex::new2d(0.0, 0.5);
-        let vertex3 = Vertex::new2d(0.5, -0.25);
-        let mesh = vec![vertex1, vertex2, vertex3];
-        let triangle = (renderer.borrow().create_render_component(mesh), TransformComponent::new());
+        let vertex1 = Vertex::new2d(0.0, 0.0, 0.0, 0.0);
+        let vertex2 = Vertex::new2d(0.0, 1.0, 0.0, 1.0);
+        let vertex3 = Vertex::new2d(1.0, 0.0, 1.0, 0.0);
+        let vertex4 = Vertex::new2d(1.0, 1.0, 1.0, 1.0);
+        let mesh = (vec![vertex1, vertex2, vertex3, vertex4], vec![0, 1, 2, 1, 2, 3]);
+        let triangle = (renderer.borrow().create_render_component(mesh, "assets/textures/dirt.png"), TransformComponent::new());
 
         TestScene { renderer, triangle }
     }
