@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use crate::renderer::{Renderer2D, SequentialRenderer};
-use crate::scene::{Scene, TestScene};
+use crate::scene::{MenuScene, Scene, TestScene};
 use glium::Display;
 use glium::glutin::ContextBuilder;
 use glium::glutin::event::{Event, WindowEvent};
@@ -18,7 +18,7 @@ pub struct Almon {
 impl Almon {
     pub fn new() -> Almon {
         let (event_loop, renderer) = Almon::init_window();
-        let current_scene = Box::new(TestScene::new(renderer.clone()));
+        let current_scene = Box::new(MenuScene::new(renderer.clone()));
 
         Almon {
             event_loop,
@@ -43,7 +43,10 @@ impl Almon {
             }
 
             while accumulator > dt {
-                almon.current_scene.update(&dt);
+                match almon.current_scene.update(&dt) {
+                    None => {}
+                    Some(scene) => {almon.current_scene = scene}
+                }
                 accumulator -= dt;
             }
 
