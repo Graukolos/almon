@@ -35,20 +35,6 @@ impl Almon {
 
         event_loop.run(move |ev, _, control_flow| {
             *control_flow = ControlFlow::Poll;
-            accumulator += frame_start.elapsed();
-            frame_start = Instant::now();
-
-            if accumulator > Duration::from_millis(200) {
-                accumulator = Duration::from_millis(200);
-            }
-
-            while accumulator > dt {
-                match almon.current_scene.update(&dt) {
-                    None => {}
-                    Some(scene) => {almon.current_scene = scene}
-                }
-                accumulator -= dt;
-            }
 
             match ev {
                 Event::WindowEvent { event, .. } => match event {
@@ -58,6 +44,20 @@ impl Almon {
                     _ => {}
                 },
                 Event::MainEventsCleared => {
+                    accumulator += frame_start.elapsed();
+                    frame_start = Instant::now();
+
+                    if accumulator > Duration::from_millis(200) {
+                        accumulator = Duration::from_millis(200);
+                    }
+
+                    while accumulator > dt {
+                        if let Some(scene) = almon.current_scene.update(&dt) {
+                            almon.current_scene = scene;
+                        }
+                        accumulator -= dt;
+                    }
+
                     almon.current_scene.render();
                 }
                 _ => {}
