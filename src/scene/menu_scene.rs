@@ -20,7 +20,7 @@ impl MenuScene {
 impl Scene for MenuScene {
     fn update(&mut self, dt: &Duration) -> Option<Box<dyn Scene>> {
         self.countdown += dt.as_secs_f32();
-        if self.countdown > 10.0 {
+        if self.countdown > 5.0 {
             return Some(Box::new(TestScene::new(self.renderer.clone())))
         }
         None

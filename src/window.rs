@@ -8,7 +8,7 @@ use glium::glutin::window::WindowBuilder;
 pub struct Window {
     width: u16,
     height: u16,
-    pub event_loop: EventLoop<()>,
+    pub event_loop: Option<EventLoop<()>>,
     display: Arc<Display>
 }
 
@@ -22,7 +22,7 @@ impl Window {
         Window {
             width,
             height,
-            event_loop,
+            event_loop: Some(event_loop),
             display: Arc::new(display)
         }
     }

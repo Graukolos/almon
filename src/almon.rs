@@ -31,8 +31,9 @@ impl Almon {
         let dt = Duration::from_millis(1000 / tickrate);
         let mut accumulator = Duration::from_millis(0);
         let mut frame_start = Instant::now();
+        let event_loop = almon.window.event_loop.take().unwrap();
 
-        almon.window.event_loop.run(move |ev, _, control_flow| {
+        event_loop.run(move |ev, _, control_flow| {
             *control_flow = ControlFlow::Poll;
             accumulator += frame_start.elapsed();
             frame_start = Instant::now();
