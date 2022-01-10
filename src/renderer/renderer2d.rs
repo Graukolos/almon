@@ -1,18 +1,26 @@
+use crate::physics::TransformComponent;
 use crate::renderer::{RenderComponent, Vertex};
 use glium::{Display, Program};
 use std::fs::File;
 use std::io::Read;
-use crate::physics::TransformComponent;
 
 pub trait Renderer2D {
     fn render_begin(&mut self);
     fn render_end(&mut self);
     fn draw(&mut self, render_object: &(RenderComponent, TransformComponent));
 
-    fn create_render_component(&self, mesh: (Vec<Vertex>, Vec<u16>), texture: &str) -> RenderComponent;
+    fn create_render_component(
+        &self,
+        mesh: (Vec<Vertex>, Vec<u16>),
+        texture: &str,
+    ) -> RenderComponent;
 }
 
-pub fn create_program(display: &Display, vertex_shader_path: &str, fragment_shader_path: &str) -> Program {
+pub fn create_program(
+    display: &Display,
+    vertex_shader_path: &str,
+    fragment_shader_path: &str,
+) -> Program {
     let mut vertex_shader_file = File::open(vertex_shader_path).unwrap();
     let mut fragment_shader_file = File::open(fragment_shader_path).unwrap();
     let mut vertex_shader_src = String::new();
@@ -30,5 +38,5 @@ pub fn create_program(display: &Display, vertex_shader_path: &str, fragment_shad
         fragment_shader_src.as_str(),
         None,
     )
-        .unwrap()
+    .unwrap()
 }

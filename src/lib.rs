@@ -4,9 +4,10 @@ extern crate cgmath;
 extern crate image;
 
 mod almon;
-mod window;
+mod event;
+mod physics;
 mod renderer;
 mod scene;
-mod physics;
+mod window;
 
 pub use almon::Almon;

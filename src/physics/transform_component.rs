@@ -1,16 +1,14 @@
-use cgmath::{Angle, Deg, Matrix4, SquareMatrix, Vector3};
+use cgmath::{Deg, Matrix4, SquareMatrix, Vector3};
 
 pub struct TransformComponent {
-    transform: Matrix4<f32>
+    transform: Matrix4<f32>,
 }
 
 impl TransformComponent {
     pub fn new() -> TransformComponent {
         let transform = Matrix4::identity();
 
-        TransformComponent {
-            transform
-        }
+        TransformComponent { transform }
     }
 
     pub fn get_transform(&self) -> [[f32; 4]; 4] {
@@ -22,6 +20,6 @@ impl TransformComponent {
     }
 
     pub fn rotate(&mut self, angle: f32) {
-        self.transform = Matrix4::from_angle_z(Deg::asin(angle)) * self.transform;
+        self.transform = self.transform * Matrix4::from_angle_z(Deg(angle));
     }
 }

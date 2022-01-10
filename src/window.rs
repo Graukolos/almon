@@ -1,15 +1,15 @@
-use std::sync::Arc;
-use glium::Display;
-use glium::glutin::ContextBuilder;
 use glium::glutin::dpi::LogicalSize;
 use glium::glutin::event_loop::EventLoop;
 use glium::glutin::window::WindowBuilder;
+use glium::glutin::ContextBuilder;
+use glium::Display;
+use std::sync::Arc;
 
 pub struct Window {
     width: u16,
     height: u16,
     pub event_loop: Option<EventLoop<()>>,
-    display: Arc<Display>
+    display: Arc<Display>,
 }
 
 impl Window {
@@ -23,7 +23,7 @@ impl Window {
             width,
             height,
             event_loop: Some(event_loop),
-            display: Arc::new(display)
+            display: Arc::new(display),
         }
     }
 
