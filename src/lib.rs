@@ -4,6 +4,7 @@ extern crate cgmath;
 extern crate image;
 
 mod almon;
+mod window;
 mod renderer;
 mod scene;
 mod physics;

@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use crate::renderer::{create_program, Renderer2D, RenderComponent, Vertex};
 use glium::{Display, Frame, IndexBuffer, Program, Surface, VertexBuffer};
 use glium::index::PrimitiveType;
@@ -5,13 +6,13 @@ use glium::texture::RawImage2d;
 use crate::physics::TransformComponent;
 
 pub struct SequentialRenderer {
-    display: Display,
+    display: Arc<Display>,
     texture_program: Program,
     current_frame: Option<Frame>
 }
 
 impl SequentialRenderer {
-    pub fn new(display: Display) -> SequentialRenderer {
+    pub fn new(display: Arc<Display>) -> SequentialRenderer {
         let texture_program = create_program(&display, "assets/shaders/texture.vert", "assets/shaders/texture.frag");
 
         SequentialRenderer {
@@ -56,12 +57,12 @@ impl Renderer2D for SequentialRenderer {
 
     fn create_render_component(&self, mesh: (Vec<Vertex>, Vec<u16>), texture: &str) -> RenderComponent {
         let (vertices, indices) = mesh;
-        let vertex_buffer = VertexBuffer::new(&self.display, &vertices).unwrap();
-        let index_buffer = IndexBuffer::new(&self.display, PrimitiveType::TrianglesList, &indices).unwrap();
+        let vertex_buffer = VertexBuffer::new(&*self.display, &vertices).unwrap();
+        let index_buffer = IndexBuffer::new(&*self.display, PrimitiveType::TrianglesList, &indices).unwrap();
         let image = image::open(texture).unwrap().to_rgba8();
         let image_dimensions = image.dimensions();
         let image = RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-        let texture = glium::texture::SrgbTexture2d::new(&self.display, image).unwrap();
+        let texture = glium::texture::SrgbTexture2d::new(&*self.display, image).unwrap();
 
         RenderComponent {
             vertex_buffer,

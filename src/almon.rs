@@ -1,28 +1,27 @@
 use std::cell::RefCell;
 use crate::renderer::{Renderer2D, SequentialRenderer};
-use crate::scene::{MenuScene, Scene, TestScene};
-use glium::Display;
-use glium::glutin::ContextBuilder;
+use crate::scene::{MenuScene, Scene};
 use glium::glutin::event::{Event, WindowEvent};
-use glium::glutin::event_loop::{ControlFlow, EventLoop};
-use glium::glutin::window::WindowBuilder;
+use glium::glutin::event_loop::ControlFlow;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
+use crate::window::Window;
 
 pub struct Almon {
-    event_loop: EventLoop<()>,
-    renderer: Rc<RefCell<dyn Renderer2D>>,
+    window: Window,
+    _renderer: Rc<RefCell<dyn Renderer2D>>,
     current_scene: Box<dyn Scene>
 }
 
 impl Almon {
     pub fn new() -> Almon {
-        let (event_loop, renderer) = Almon::init_window();
-        let current_scene = Box::new(MenuScene::new(renderer.clone()));
+        let window = Window::default();
+        let _renderer = Rc::new(RefCell::new(SequentialRenderer::new(window.get_display())));
+        let current_scene = Box::new(MenuScene::new(_renderer.clone()));
 
         Almon {
-            event_loop,
-            renderer,
+            window,
+            _renderer,
             current_scene
         }
     }
@@ -33,7 +32,7 @@ impl Almon {
         let mut accumulator = Duration::from_millis(0);
         let mut frame_start = Instant::now();
 
-        almon.event_loop.run(move |ev, _, control_flow| {
+        almon.window.event_loop.run(move |ev, _, control_flow| {
             *control_flow = ControlFlow::Poll;
             accumulator += frame_start.elapsed();
             frame_start = Instant::now();
@@ -63,15 +62,5 @@ impl Almon {
                 _ => {}
             }
         });
-    }
-
-    fn init_window() -> (EventLoop<()>, Rc<RefCell<dyn Renderer2D>>) {
-        let event_loop = EventLoop::new();
-        let wb = WindowBuilder::new();
-        let cb = ContextBuilder::new();
-        let display = Display::new(wb, cb, &event_loop).unwrap();
-        let renderer = Rc::new(RefCell::new(SequentialRenderer::new(display)));
-
-        (event_loop, renderer)
     }
 }
