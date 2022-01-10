@@ -12,7 +12,7 @@ use std::time::{Duration, Instant};
 pub struct Almon {
     event_loop: EventLoop<()>,
     renderer: Rc<RefCell<dyn Renderer2D>>,
-    current_scene: Box<dyn Scene>,
+    current_scene: Box<dyn Scene>
 }
 
 impl Almon {
@@ -50,8 +50,6 @@ impl Almon {
                 accumulator -= dt;
             }
 
-            almon.current_scene.render();
-
             match ev {
                 Event::WindowEvent { event, .. } => match event {
                     WindowEvent::CloseRequested => {
@@ -59,6 +57,9 @@ impl Almon {
                     }
                     _ => {}
                 },
+                Event::MainEventsCleared => {
+                    almon.current_scene.render();
+                }
                 _ => {}
             }
         });
