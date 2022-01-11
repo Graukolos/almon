@@ -1,4 +1,5 @@
 use crate::renderer::{Renderer2D, SequentialRenderer};
+use crate::resources::ResourceManager;
 use crate::scene::{MenuScene, Scene};
 use crate::window::Window;
 use glium::glutin::event::{ElementState, Event, WindowEvent};
@@ -9,6 +10,7 @@ use std::time::{Duration, Instant};
 
 pub struct Almon {
     window: Window,
+    _resource_manager: Rc<RefCell<ResourceManager>>,
     _renderer: Rc<RefCell<dyn Renderer2D>>,
     current_scene: Box<dyn Scene>,
 }
@@ -16,11 +18,16 @@ pub struct Almon {
 impl Almon {
     pub fn new() -> Almon {
         let window = Window::default();
-        let _renderer = Rc::new(RefCell::new(SequentialRenderer::new(window.get_display())));
+        let _resource_manager = Rc::new(RefCell::new(ResourceManager::new(window.get_display())));
+        let _renderer = Rc::new(RefCell::new(SequentialRenderer::new(
+            window.get_display(),
+            _resource_manager.clone(),
+        )));
         let current_scene = Box::new(MenuScene::new(_renderer.clone()));
 
         Almon {
             window,
+            _resource_manager,
             _renderer,
             current_scene,
         }

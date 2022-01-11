@@ -1,26 +1,28 @@
 use crate::physics::TransformComponent;
-use crate::renderer::{create_program, RenderComponent, Renderer2D, Vertex};
+use crate::renderer::{RenderComponent, Renderer2D, Vertex};
+use crate::resources::ResourceManager;
 use glium::index::PrimitiveType;
-use glium::texture::RawImage2d;
 use glium::{Display, Frame, IndexBuffer, Program, Surface, VertexBuffer};
-use std::sync::Arc;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 pub struct SequentialRenderer {
-    display: Arc<Display>,
-    texture_program: Program,
+    display: Rc<Display>,
+    resource_manager: Rc<RefCell<ResourceManager>>,
+    texture_program: Rc<Program>,
     current_frame: Option<Frame>,
 }
 
 impl SequentialRenderer {
-    pub fn new(display: Arc<Display>) -> SequentialRenderer {
-        let texture_program = create_program(
-            &display,
-            "assets/shaders/texture.vert",
-            "assets/shaders/texture.frag",
-        );
+    pub fn new(
+        display: Rc<Display>,
+        resource_manager: Rc<RefCell<ResourceManager>>,
+    ) -> SequentialRenderer {
+        let texture_program = resource_manager.borrow_mut().get_shader("texture");
 
         SequentialRenderer {
             display,
+            resource_manager,
             texture_program,
             current_frame: None,
         }
@@ -44,7 +46,7 @@ impl Renderer2D for SequentialRenderer {
         let mut frame = self.current_frame.take().unwrap();
         let uniforms = uniform! {
             matrix: transform_component.get_transform(),
-            tex: &render_component.texture
+            tex: &*render_component.texture
         };
         frame
             .draw(
@@ -67,10 +69,7 @@ impl Renderer2D for SequentialRenderer {
         let vertex_buffer = VertexBuffer::new(&*self.display, &vertices).unwrap();
         let index_buffer =
             IndexBuffer::new(&*self.display, PrimitiveType::TrianglesList, &indices).unwrap();
-        let image = image::open(texture).unwrap().to_rgba8();
-        let image_dimensions = image.dimensions();
-        let image = RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-        let texture = glium::texture::SrgbTexture2d::new(&*self.display, image).unwrap();
+        let texture = self.resource_manager.borrow_mut().get_texture(texture);
 
         RenderComponent {
             vertex_buffer,

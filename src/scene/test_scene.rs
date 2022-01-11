@@ -23,9 +23,7 @@ impl TestScene {
             vec![0, 1, 2, 1, 2, 3],
         );
         let mut triangle = (
-            renderer
-                .borrow()
-                .create_render_component(mesh, "assets/textures/dirt.png"),
+            renderer.borrow().create_render_component(mesh, "dirt"),
             TransformComponent::new(),
         );
         triangle.1.translate(Vector3::new(-0.5, -0.5, 0.0));
@@ -35,12 +33,7 @@ impl TestScene {
 }
 
 impl Scene for TestScene {
-    fn update(&mut self, dt: &Duration) -> Option<Box<dyn Scene>> {
-        //self.triangle.1.translate(Vector3::new(dt.as_secs_f32()/5.0, 0.0, 0.0));
-        //if self.triangle.1.get_transform()[3][0] > 1.5 {
-        //    self.triangle.1.translate(Vector3::new(-3.0, 0.0, 0.0));
-        //}
-        //self.triangle.1.rotate(dt.as_secs_f32() * 100.0);
+    fn update(&mut self, _dt: &Duration) -> Option<Box<dyn Scene>> {
         None
     }
 

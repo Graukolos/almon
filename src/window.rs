@@ -3,13 +3,13 @@ use glium::glutin::event_loop::EventLoop;
 use glium::glutin::window::WindowBuilder;
 use glium::glutin::ContextBuilder;
 use glium::Display;
-use std::sync::Arc;
+use std::rc::Rc;
 
 pub struct Window {
     width: u16,
     height: u16,
     pub event_loop: Option<EventLoop<()>>,
-    display: Arc<Display>,
+    display: Rc<Display>,
 }
 
 impl Window {
@@ -23,11 +23,11 @@ impl Window {
             width,
             height,
             event_loop: Some(event_loop),
-            display: Arc::new(display),
+            display: Rc::new(display),
         }
     }
 
-    pub fn get_display(&self) -> Arc<Display> {
+    pub fn get_display(&self) -> Rc<Display> {
         self.display.clone()
     }
 }

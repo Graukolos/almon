@@ -1,10 +1,11 @@
 use glium::texture::SrgbTexture2d;
 use glium::{IndexBuffer, VertexBuffer};
+use std::rc::Rc;
 
 pub struct RenderComponent {
     pub vertex_buffer: VertexBuffer<Vertex>,
     pub index_buffer: IndexBuffer<u16>,
-    pub texture: SrgbTexture2d,
+    pub texture: Rc<SrgbTexture2d>,
 }
 
 #[derive(Copy, Clone)]

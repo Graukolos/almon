@@ -35,5 +35,5 @@ impl Scene for MenuScene {
         self.renderer.borrow_mut().render_end();
     }
 
-    fn handle(&mut self, event: Event) {}
+    fn handle(&mut self, _event: Event) {}
 }

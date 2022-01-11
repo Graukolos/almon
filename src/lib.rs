@@ -7,6 +7,7 @@ mod almon;
 mod event;
 mod physics;
 mod renderer;
+mod resources;
 mod scene;
 mod window;
 
