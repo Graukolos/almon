@@ -6,22 +6,22 @@ use glium::Display;
 use std::rc::Rc;
 
 pub struct Window {
-    width: u16,
-    height: u16,
+    _width: u16,
+    _height: u16,
     pub event_loop: Option<EventLoop<()>>,
     display: Rc<Display>,
 }
 
 impl Window {
-    pub fn new(width: u16, height: u16) -> Window {
+    pub fn new(_width: u16, _height: u16) -> Window {
         let event_loop = EventLoop::new();
-        let wb = WindowBuilder::new().with_inner_size(LogicalSize::new(width, height));
+        let wb = WindowBuilder::new().with_inner_size(LogicalSize::new(_width, _height));
         let cb = ContextBuilder::new();
         let display = Display::new(wb, cb, &event_loop).unwrap();
 
         Window {
-            width,
-            height,
+            _width,
+            _height,
             event_loop: Some(event_loop),
             display: Rc::new(display),
         }

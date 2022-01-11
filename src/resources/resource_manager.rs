@@ -1,5 +1,7 @@
+use crate::renderer::{Mesh, Vertex};
+use glium::index::PrimitiveType;
 use glium::texture::{RawImage2d, SrgbTexture2d};
-use glium::{Display, Program};
+use glium::{Display, IndexBuffer, Program, VertexBuffer};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
@@ -9,17 +11,20 @@ pub struct ResourceManager {
     display: Rc<Display>,
     shaders: HashMap<String, Rc<Program>>,
     textures: HashMap<String, Rc<SrgbTexture2d>>,
+    meshes: HashMap<String, Rc<Mesh>>,
 }
 
 impl ResourceManager {
     pub fn new(display: Rc<Display>) -> Self {
         let shaders = HashMap::new();
         let textures = HashMap::new();
+        let meshes = HashMap::new();
 
         ResourceManager {
             display,
             shaders,
             textures,
+            meshes,
         }
     }
 
@@ -43,6 +48,17 @@ impl ResourceManager {
                 self.shaders
                     .insert(String::from(shader_name), shader.clone());
                 shader
+            }
+        }
+    }
+
+    pub fn get_mesh(&mut self, mesh_name: &str) -> Rc<Mesh> {
+        match self.meshes.get(mesh_name) {
+            Some(mesh) => mesh.clone(),
+            None => {
+                let mesh = Rc::new(self.load_mesh(mesh_name));
+                self.meshes.insert(String::from(mesh_name), mesh.clone());
+                mesh
             }
         }
     }
@@ -78,5 +94,24 @@ impl ResourceManager {
             None,
         )
         .unwrap()
+    }
+
+    fn load_mesh(&self, _mesh_name: &str) -> Mesh {
+        let vertices = vec![
+            Vertex::new(0.25, 0.25, 0.0, 0.0),
+            Vertex::new(0.25, 0.75, 0.0, 1.0),
+            Vertex::new(0.75, 0.25, 1.0, 0.0),
+            Vertex::new(0.75, 0.75, 1.0, 1.0),
+        ];
+        let indices = vec![0, 1, 2, 1, 2, 3];
+
+        let vertex_buffer = VertexBuffer::new(&*self.display, &vertices).unwrap();
+        let index_buffer =
+            IndexBuffer::new(&*self.display, PrimitiveType::TrianglesList, &indices).unwrap();
+
+        Mesh {
+            vertex_buffer,
+            index_buffer,
+        }
     }
 }

@@ -1,6 +1,7 @@
+use crate::components::{SpriteRenderComponent, TransformComponent};
 use crate::event::Event;
-use crate::physics::TransformComponent;
-use crate::renderer::{RenderComponent, Renderer2D, Vertex};
+use crate::renderer::Renderer2D;
+use crate::resources::ResourceManager;
 use crate::scene::Scene;
 use cgmath::Vector3;
 use std::cell::RefCell;
@@ -9,26 +10,21 @@ use std::time::Duration;
 
 pub struct TestScene {
     renderer: Rc<RefCell<dyn Renderer2D>>,
-    triangle: (RenderComponent, TransformComponent),
+    quad: (SpriteRenderComponent, TransformComponent),
 }
 
 impl TestScene {
-    pub fn new(renderer: Rc<RefCell<dyn Renderer2D>>) -> TestScene {
-        let vertex1 = Vertex::new2d(0.25, 0.25, 0.0, 0.0);
-        let vertex2 = Vertex::new2d(0.25, 0.75, 0.0, 1.0);
-        let vertex3 = Vertex::new2d(0.75, 0.25, 1.0, 0.0);
-        let vertex4 = Vertex::new2d(0.75, 0.75, 1.0, 1.0);
-        let mesh = (
-            vec![vertex1, vertex2, vertex3, vertex4],
-            vec![0, 1, 2, 1, 2, 3],
-        );
-        let mut triangle = (
-            renderer.borrow().create_render_component(mesh, "dirt"),
+    pub fn new(
+        renderer: Rc<RefCell<dyn Renderer2D>>,
+        resource_manager: Rc<RefCell<ResourceManager>>,
+    ) -> TestScene {
+        let mut quad = (
+            SpriteRenderComponent::new("quad", "dirt", &resource_manager),
             TransformComponent::new(),
         );
-        triangle.1.translate(Vector3::new(-0.5, -0.5, 0.0));
+        quad.1.translate(Vector3::new(-0.5, -0.5, 0.0));
 
-        TestScene { renderer, triangle }
+        TestScene { renderer, quad }
     }
 }
 
@@ -39,7 +35,7 @@ impl Scene for TestScene {
 
     fn render(&mut self) {
         self.renderer.borrow_mut().render_begin();
-        self.renderer.borrow_mut().draw(&self.triangle);
+        self.renderer.borrow_mut().draw(&self.quad);
         self.renderer.borrow_mut().render_end();
     }
 
@@ -48,13 +44,13 @@ impl Scene for TestScene {
             Event::KeyPressedEvent(keycode) => {
                 println!("{}", keycode);
                 if keycode == 123 {
-                    self.triangle.1.translate(Vector3::new(-0.01, 0.0, 0.0));
+                    self.quad.1.translate(Vector3::new(-0.01, 0.0, 0.0));
                 } else if keycode == 124 {
-                    self.triangle.1.translate(Vector3::new(0.01, 0.0, 0.0));
+                    self.quad.1.translate(Vector3::new(0.01, 0.0, 0.0));
                 } else if keycode == 125 {
-                    self.triangle.1.translate(Vector3::new(0.0, -0.01, 0.0));
+                    self.quad.1.translate(Vector3::new(0.0, -0.01, 0.0));
                 } else if keycode == 126 {
-                    self.triangle.1.translate(Vector3::new(0.0, 0.01, 0.0));
+                    self.quad.1.translate(Vector3::new(0.0, 0.01, 0.0));
                 }
             }
         }

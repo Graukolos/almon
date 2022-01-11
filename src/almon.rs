@@ -23,7 +23,7 @@ impl Almon {
             window.get_display(),
             _resource_manager.clone(),
         )));
-        let current_scene = Box::new(MenuScene::new(_renderer.clone()));
+        let current_scene = Box::new(MenuScene::new(_renderer.clone(), _resource_manager.clone()));
 
         Almon {
             window,

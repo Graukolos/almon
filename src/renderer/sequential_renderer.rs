@@ -1,14 +1,13 @@
-use crate::physics::TransformComponent;
-use crate::renderer::{RenderComponent, Renderer2D, Vertex};
+use crate::components::{SpriteRenderComponent, TransformComponent};
+use crate::renderer::Renderer2D;
 use crate::resources::ResourceManager;
-use glium::index::PrimitiveType;
-use glium::{Display, Frame, IndexBuffer, Program, Surface, VertexBuffer};
+use glium::{Display, Frame, Program, Surface};
 use std::cell::RefCell;
 use std::rc::Rc;
 
 pub struct SequentialRenderer {
     display: Rc<Display>,
-    resource_manager: Rc<RefCell<ResourceManager>>,
+    _resource_manager: Rc<RefCell<ResourceManager>>,
     texture_program: Rc<Program>,
     current_frame: Option<Frame>,
 }
@@ -16,13 +15,13 @@ pub struct SequentialRenderer {
 impl SequentialRenderer {
     pub fn new(
         display: Rc<Display>,
-        resource_manager: Rc<RefCell<ResourceManager>>,
+        _resource_manager: Rc<RefCell<ResourceManager>>,
     ) -> SequentialRenderer {
-        let texture_program = resource_manager.borrow_mut().get_shader("texture");
+        let texture_program = _resource_manager.borrow_mut().get_shader("texture");
 
         SequentialRenderer {
             display,
-            resource_manager,
+            _resource_manager,
             texture_program,
             current_frame: None,
         }
@@ -41,40 +40,22 @@ impl Renderer2D for SequentialRenderer {
         frame.finish().unwrap();
     }
 
-    fn draw(&mut self, render_object: &(RenderComponent, TransformComponent)) {
+    fn draw(&mut self, render_object: &(SpriteRenderComponent, TransformComponent)) {
         let (render_component, transform_component) = render_object;
         let mut frame = self.current_frame.take().unwrap();
         let uniforms = uniform! {
-            matrix: transform_component.get_transform(),
+            matrix: transform_component.transform(),
             tex: &*render_component.texture
         };
         frame
             .draw(
-                &render_component.vertex_buffer,
-                &render_component.index_buffer,
+                &render_component.mesh.vertex_buffer,
+                &render_component.mesh.index_buffer,
                 &self.texture_program,
                 &uniforms,
                 &Default::default(),
             )
             .unwrap();
         self.current_frame.replace(frame);
-    }
-
-    fn create_render_component(
-        &self,
-        mesh: (Vec<Vertex>, Vec<u16>),
-        texture: &str,
-    ) -> RenderComponent {
-        let (vertices, indices) = mesh;
-        let vertex_buffer = VertexBuffer::new(&*self.display, &vertices).unwrap();
-        let index_buffer =
-            IndexBuffer::new(&*self.display, PrimitiveType::TrianglesList, &indices).unwrap();
-        let texture = self.resource_manager.borrow_mut().get_texture(texture);
-
-        RenderComponent {
-            vertex_buffer,
-            index_buffer,
-            texture,
-        }
     }
 }
