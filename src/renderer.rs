@@ -1,7 +1,9 @@
+mod camera;
+mod orthographic_camera;
 mod renderer2d;
-mod sequential_renderer;
 mod vertex;
 
+pub use camera::Camera;
+pub use orthographic_camera::OrthographicCamera;
 pub use renderer2d::Renderer2D;
-pub use sequential_renderer::SequentialRenderer;
 pub use vertex::{Mesh, Vertex};

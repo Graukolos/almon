@@ -1,6 +1,6 @@
 use crate::components::{SpriteRenderComponent, TransformComponent};
 use crate::event::Event;
-use crate::renderer::Renderer2D;
+use crate::renderer::{Camera, OrthographicCamera, Renderer2D};
 use crate::resources::ResourceManager;
 use crate::scene::Scene;
 use cgmath::Vector3;
@@ -9,22 +9,29 @@ use std::rc::Rc;
 use std::time::Duration;
 
 pub struct TestScene {
-    renderer: Rc<RefCell<dyn Renderer2D>>,
+    renderer: Rc<RefCell<Renderer2D>>,
     quad: (SpriteRenderComponent, TransformComponent),
+    camera: Rc<dyn Camera>,
 }
 
 impl TestScene {
     pub fn new(
-        renderer: Rc<RefCell<dyn Renderer2D>>,
+        renderer: Rc<RefCell<Renderer2D>>,
         resource_manager: Rc<RefCell<ResourceManager>>,
     ) -> TestScene {
         let mut quad = (
             SpriteRenderComponent::new("quad", "dirt", &resource_manager),
             TransformComponent::new(),
         );
+        quad.1.translate(Vector3::new(0.0, 0.0, -0.5));
         quad.1.translate(Vector3::new(-0.5, -0.5, 0.0));
+        let camera = Rc::new(OrthographicCamera::new(-2.0, 2.0, -2.0, 2.0));
 
-        TestScene { renderer, quad }
+        TestScene {
+            renderer,
+            quad,
+            camera,
+        }
     }
 }
 
@@ -34,9 +41,11 @@ impl Scene for TestScene {
     }
 
     fn render(&mut self) {
-        self.renderer.borrow_mut().render_begin();
-        self.renderer.borrow_mut().draw(&self.quad);
-        self.renderer.borrow_mut().render_end();
+        self.renderer.borrow_mut().begin_render(self.camera.clone());
+        self.renderer
+            .borrow_mut()
+            .draw_quad(self.quad.1.transform(), "dirt");
+        self.renderer.borrow_mut().end_render();
     }
 
     fn handle(&mut self, event: Event) {

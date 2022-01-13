@@ -17,8 +17,8 @@ impl TransformComponent {
         }
     }
 
-    pub fn transform(&self) -> [[f32; 4]; 4] {
-        (self.translation * self.rotation).into()
+    pub fn transform(&self) -> Matrix4<f32> {
+        self.translation * self.rotation
     }
 
     pub fn translate(&mut self, shift: Vector3<f32>) {
