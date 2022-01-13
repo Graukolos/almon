@@ -11,7 +11,7 @@ pub struct Renderer2D {
     texture_program: Rc<Program>,
     quad: Rc<Mesh>,
     current_frame: Option<Frame>,
-    camera: Option<Rc<dyn Camera>>,
+    camera: Option<Rc<Camera>>,
 }
 
 impl Renderer2D {
@@ -29,7 +29,7 @@ impl Renderer2D {
         }
     }
 
-    pub fn begin_render(&mut self, camera: Rc<dyn Camera>) {
+    pub fn begin_render(&mut self, camera: Rc<Camera>) {
         let mut frame = self.display.draw();
         frame.clear_color(0.0, 0.0, 0.0, 1.0);
         self.current_frame.get_or_insert(frame);

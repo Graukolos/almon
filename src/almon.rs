@@ -17,7 +17,7 @@ pub struct Almon {
 
 impl Almon {
     pub fn new() -> Almon {
-        let window = Window::default();
+        let window = Window::new(800, 600);
         let _resource_manager = Rc::new(RefCell::new(ResourceManager::new(window.get_display())));
         let _renderer = Rc::new(RefCell::new(Renderer2D::new(
             window.get_display(),

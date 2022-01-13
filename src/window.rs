@@ -6,8 +6,6 @@ use glium::Display;
 use std::rc::Rc;
 
 pub struct Window {
-    _width: u16,
-    _height: u16,
     pub event_loop: Option<EventLoop<()>>,
     display: Rc<Display>,
 }
@@ -20,8 +18,6 @@ impl Window {
         let display = Display::new(wb, cb, &event_loop).unwrap();
 
         Window {
-            _width,
-            _height,
             event_loop: Some(event_loop),
             display: Rc::new(display),
         }
@@ -29,11 +25,5 @@ impl Window {
 
     pub fn get_display(&self) -> Rc<Display> {
         self.display.clone()
-    }
-}
-
-impl Default for Window {
-    fn default() -> Self {
-        Window::new(800, 600)
     }
 }

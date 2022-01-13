@@ -1,6 +1,6 @@
 use crate::components::{SpriteRenderComponent, TransformComponent};
 use crate::event::Event;
-use crate::renderer::{Camera, OrthographicCamera, Renderer2D};
+use crate::renderer::{Camera, Renderer2D};
 use crate::resources::ResourceManager;
 use crate::scene::Scene;
 use cgmath::Vector3;
@@ -11,7 +11,7 @@ use std::time::Duration;
 pub struct TestScene {
     renderer: Rc<RefCell<Renderer2D>>,
     quad: (SpriteRenderComponent, TransformComponent),
-    camera: Rc<dyn Camera>,
+    camera: Rc<Camera>,
 }
 
 impl TestScene {
@@ -25,7 +25,7 @@ impl TestScene {
         );
         quad.1.translate(Vector3::new(0.0, 0.0, -0.5));
         quad.1.translate(Vector3::new(-0.5, -0.5, 0.0));
-        let camera = Rc::new(OrthographicCamera::new(-2.0, 2.0, -2.0, 2.0));
+        let camera = Rc::new(Camera::new(-2.0, 2.0, -2.0, 2.0));
 
         TestScene {
             renderer,

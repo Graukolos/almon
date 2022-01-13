@@ -6,7 +6,6 @@ extern crate image;
 mod almon;
 mod components;
 mod event;
-mod physics;
 mod renderer;
 mod resources;
 mod scene;

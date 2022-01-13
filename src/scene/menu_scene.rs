@@ -1,5 +1,5 @@
 use crate::event::Event;
-use crate::renderer::{Camera, OrthographicCamera, Renderer2D};
+use crate::renderer::{Camera, Renderer2D};
 use crate::resources::ResourceManager;
 use crate::scene::{Scene, TestScene};
 use std::cell::RefCell;
@@ -10,7 +10,7 @@ pub struct MenuScene {
     resource_manager: Rc<RefCell<ResourceManager>>,
     renderer: Rc<RefCell<Renderer2D>>,
     countdown: f32,
-    camera: Rc<dyn Camera>,
+    camera: Rc<Camera>,
 }
 
 impl MenuScene {
@@ -19,7 +19,7 @@ impl MenuScene {
         resource_manager: Rc<RefCell<ResourceManager>>,
     ) -> MenuScene {
         let countdown = 0.0;
-        let camera = Rc::new(OrthographicCamera::new(-1.0, 1.0, -1.0, 1.0));
+        let camera = Rc::new(Camera::new(-2.0, 2.0, -2.0, 2.0));
 
         MenuScene {
             resource_manager,
@@ -33,7 +33,7 @@ impl MenuScene {
 impl Scene for MenuScene {
     fn update(&mut self, dt: &Duration) -> Option<Box<dyn Scene>> {
         self.countdown += dt.as_secs_f32();
-        if self.countdown > 5.0 {
+        if self.countdown > 3.0 {
             return Some(Box::new(TestScene::new(
                 self.renderer.clone(),
                 self.resource_manager.clone(),
