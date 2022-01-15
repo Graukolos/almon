@@ -1,5 +1,5 @@
 use cgmath::prelude::*;
-use cgmath::{Matrix4, Perspective, Vector3};
+use cgmath::{Matrix4, Vector3};
 
 pub struct Camera {
     view_matrix: Matrix4<f32>,
