@@ -1,6 +1,5 @@
 use almon::Almon;
 
 fn main() {
-    let almon = Almon::new();
-    Almon::run(almon);
+    Almon::run(Almon::new());
 }
