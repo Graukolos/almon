@@ -48,6 +48,14 @@ impl Almon {
                     WindowEvent::CloseRequested => {
                         *control_flow = ControlFlow::Exit;
                     }
+                    WindowEvent::Resized(physical_size) => {
+                        almon
+                            .current_scene
+                            .handle(crate::event::Event::WindowResizedEvent(
+                                physical_size.width as u16,
+                                physical_size.height as u16,
+                            ));
+                    }
                     WindowEvent::KeyboardInput { input, .. } => {
                         if input.state == ElementState::Pressed {
                             almon

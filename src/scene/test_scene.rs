@@ -11,7 +11,7 @@ use std::time::Duration;
 pub struct TestScene {
     renderer: Rc<RefCell<Renderer2D>>,
     quad: (SpriteRenderComponent, TransformComponent),
-    camera: Rc<Camera>,
+    camera: Rc<RefCell<Camera>>,
 }
 
 impl TestScene {
@@ -25,7 +25,7 @@ impl TestScene {
         );
         quad.1.translate(Vector3::new(0.0, 0.0, -0.5));
         quad.1.translate(Vector3::new(-0.5, -0.5, 0.0));
-        let camera = Rc::new(Camera::new(-2.0, 2.0, -2.0, 2.0));
+        let camera = Rc::new(RefCell::new(Camera::new(-4.0, 4.0, -3.0, 3.0)));
 
         TestScene {
             renderer,
@@ -61,6 +61,15 @@ impl Scene for TestScene {
                 } else if keycode == 126 {
                     self.quad.1.translate(Vector3::new(0.0, 0.01, 0.0));
                 }
+            }
+            Event::WindowResizedEvent(width, height) => {
+                println!("resized");
+                self.camera.borrow_mut().set_projection(
+                    -(width as f32 / 1000.0),
+                    width as f32 / 1000.0,
+                    -(height as f32 / 1000.0),
+                    height as f32 / 1000.0,
+                )
             }
         }
     }

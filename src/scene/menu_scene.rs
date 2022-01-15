@@ -10,7 +10,7 @@ pub struct MenuScene {
     resource_manager: Rc<RefCell<ResourceManager>>,
     renderer: Rc<RefCell<Renderer2D>>,
     countdown: f32,
-    camera: Rc<Camera>,
+    camera: Rc<RefCell<Camera>>,
 }
 
 impl MenuScene {
@@ -19,7 +19,7 @@ impl MenuScene {
         resource_manager: Rc<RefCell<ResourceManager>>,
     ) -> MenuScene {
         let countdown = 0.0;
-        let camera = Rc::new(Camera::new(-2.0, 2.0, -2.0, 2.0));
+        let camera = Rc::new(RefCell::new(Camera::new(-2.0, 2.0, -2.0, 2.0)));
 
         MenuScene {
             resource_manager,

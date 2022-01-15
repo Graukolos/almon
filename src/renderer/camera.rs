@@ -10,15 +10,8 @@ pub struct Camera {
 impl Camera {
     pub fn new(left: f32, right: f32, bottom: f32, top: f32) -> Self {
         let view_matrix = Matrix4::identity();
-        let projection_matrix = Matrix4::from(Perspective {
-            left,
-            right,
-            bottom,
-            top,
-            near: -1.0,
-            far: 1.0,
-        });
-        let view_projection_matrix = projection_matrix * view_matrix;
+        let projection_matrix = cgmath::ortho(left, right, bottom, top, -1.0, 1.0);
+        let view_projection_matrix = projection_matrix;
 
         Self {
             view_matrix,
@@ -37,14 +30,7 @@ impl Camera {
     }
 
     pub fn set_projection(&mut self, left: f32, right: f32, bottom: f32, top: f32) {
-        self.projection_matrix = Matrix4::from(Perspective {
-            left,
-            right,
-            bottom,
-            top,
-            near: -1.0,
-            far: 1.0,
-        });
+        self.projection_matrix = cgmath::ortho(left, right, bottom, top, -1.0, 1.0);
         self.view_projection_matrix = self.projection_matrix * self.view_matrix;
     }
 }

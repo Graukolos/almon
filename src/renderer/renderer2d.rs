@@ -11,7 +11,7 @@ pub struct Renderer2D {
     texture_program: Rc<Program>,
     quad: Rc<Mesh>,
     current_frame: Option<Frame>,
-    camera: Option<Rc<Camera>>,
+    camera: Option<Rc<RefCell<Camera>>>,
 }
 
 impl Renderer2D {
@@ -29,7 +29,7 @@ impl Renderer2D {
         }
     }
 
-    pub fn begin_render(&mut self, camera: Rc<Camera>) {
+    pub fn begin_render(&mut self, camera: Rc<RefCell<Camera>>) {
         let mut frame = self.display.draw();
         frame.clear_color(0.0, 0.0, 0.0, 1.0);
         self.current_frame.get_or_insert(frame);
@@ -45,9 +45,17 @@ impl Renderer2D {
     pub fn draw_quad(&mut self, transform: Matrix4<f32>, texture: &str) {
         let mut frame = self.current_frame.take().unwrap();
         let tex = self._resource_manager.borrow_mut().get_texture(texture);
-        let matrix: [[f32; 4]; 4] = transform.into();
+        let view_projection: [[f32; 4]; 4] = self
+            .camera
+            .as_ref()
+            .unwrap()
+            .borrow()
+            .get_view_projection_matrix()
+            .into();
+        let model: [[f32; 4]; 4] = transform.into();
         let uniforms = uniform! {
-            matrix: matrix,
+            view_projection: view_projection,
+            model: model,
             tex: &*tex,
         };
         frame
