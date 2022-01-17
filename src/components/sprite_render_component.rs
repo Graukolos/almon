@@ -1,23 +1,17 @@
-use crate::renderer::Mesh;
-use crate::resources::ResourceManager;
-use glium::texture::SrgbTexture2d;
-use std::cell::RefCell;
-use std::rc::Rc;
+use cgmath::Matrix4;
 
 pub struct SpriteRenderComponent {
-    pub mesh: Rc<Mesh>,
-    pub texture: Rc<SrgbTexture2d>,
+    pub scale: Matrix4<f32>,
+    pub texture: String,
 }
 
 impl SpriteRenderComponent {
-    pub fn new(
-        _mesh_name: &str,
-        _texture_name: &str,
-        resource_manager: &Rc<RefCell<ResourceManager>>,
-    ) -> Self {
-        let mesh = resource_manager.borrow_mut().get_mesh("quad");
-        let texture = resource_manager.borrow_mut().get_texture("dirt");
+    pub fn new(texture_name: &str, dimensions: (f32, f32)) -> Self {
+        let scale = Matrix4::from_nonuniform_scale(dimensions.0, dimensions.1, 1.0);
 
-        Self { mesh, texture }
+        Self {
+            scale,
+            texture: texture_name.to_string(),
+        }
     }
 }
