@@ -38,6 +38,7 @@ dependencies = [
 name = "almon"
 version = "0.1.0"
 dependencies = [
+ "ahash",
  "cgmath",
  "glium",
  "hecs",

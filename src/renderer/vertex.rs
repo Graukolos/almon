@@ -1,5 +1,3 @@
-use glium::{IndexBuffer, VertexBuffer};
-
 #[derive(Copy, Clone)]
 pub struct Vertex {
     position: [f32; 3],
@@ -18,8 +16,3 @@ impl Vertex {
     }
 }
 implement_vertex!(Vertex, position, tex_coords);
-
-pub struct Mesh {
-    pub vertex_buffer: VertexBuffer<Vertex>,
-    pub index_buffer: IndexBuffer<u16>,
-}

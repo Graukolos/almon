@@ -11,7 +11,7 @@ use std::time::Duration;
 
 pub struct TestScene {
     renderer: Rc<RefCell<Renderer2D>>,
-    camera: Rc<RefCell<Camera>>,
+    camera: Option<Camera>,
     world: World,
     event_queue: VecDeque<Event>,
 }
@@ -40,7 +40,7 @@ impl TestScene {
         );
         world.spawn(player);
 
-        let camera = Rc::new(RefCell::new(Camera::new(-4.0, 4.0, -3.0, 3.0)));
+        let camera = Some(Camera::new(-4.0, 4.0, -3.0, 3.0));
 
         TestScene {
             renderer,
@@ -54,7 +54,6 @@ impl TestScene {
         for event in self.event_queue.iter() {
             match event {
                 Event::KeyPressedEvent(keycode, state) => {
-                    println!("{}", keycode);
                     if keycode == &123 {
                         for (_, player_controller_component) in
                             self.world.query_mut::<&mut PlayerControllerComponent>()
@@ -82,8 +81,7 @@ impl TestScene {
                     }
                 }
                 Event::WindowResizedEvent(width, height) => {
-                    println!("resized");
-                    self.camera.borrow_mut().set_projection(
+                    self.camera.as_mut().unwrap().set_projection(
                         -(*width as f32 / 1000.0),
                         *width as f32 / 1000.0,
                         -(*height as f32 / 1000.0),
@@ -113,14 +111,9 @@ impl TestScene {
             if player_controller_component.moving_down {
                 transform_component.translate(Vector3::new(0.0, -0.1, 0.0) * dt.as_secs_f32())
             }
-            println!(
-                "x: {} y: {} z: {}",
-                transform_component.position().x,
-                transform_component.position().y,
-                transform_component.position().z
-            );
             self.camera
-                .borrow_mut()
+                .as_mut()
+                .unwrap()
                 .set_position(transform_component.position())
         }
     }
@@ -134,17 +127,18 @@ impl Scene for TestScene {
     }
 
     fn render(&mut self) {
-        self.renderer.borrow_mut().begin_render(self.camera.clone());
+        self.renderer
+            .borrow_mut()
+            .begin_render(self.camera.take().unwrap());
         for (_, (render_component, transform_component)) in self
             .world
             .query_mut::<(&SpriteRenderComponent, &TransformComponent)>()
         {
-            self.renderer.borrow_mut().draw_quad(
-                render_component.scale * transform_component.transform(),
-                render_component.texture.as_str(),
-            );
+            self.renderer
+                .borrow_mut()
+                .draw_quad(transform_component, render_component);
         }
-        self.renderer.borrow_mut().end_render();
+        self.camera = Some(self.renderer.borrow_mut().end_render());
     }
 
     fn handle(&mut self, event: Event) {
