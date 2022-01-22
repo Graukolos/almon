@@ -1,7 +1,7 @@
 use crate::renderer::Renderer2D;
 use crate::resources::ResourceManager;
 use crate::scene::{MenuScene, Scene};
-use crate::window::Window;
+use crate::ui::Window;
 use glium::glutin::event::{ElementState, Event, WindowEvent};
 use glium::glutin::event_loop::ControlFlow;
 use std::cell::RefCell;
@@ -51,7 +51,7 @@ impl Almon {
                     WindowEvent::Resized(physical_size) => {
                         almon
                             .current_scene
-                            .handle(crate::event::Event::WindowResizedEvent(
+                            .handle(crate::ui::Event::WindowResizedEvent(
                                 physical_size.width as u16,
                                 physical_size.height as u16,
                             ));
@@ -59,7 +59,7 @@ impl Almon {
                     WindowEvent::KeyboardInput { input, .. } => {
                         almon
                             .current_scene
-                            .handle(crate::event::Event::KeyPressedEvent(
+                            .handle(crate::ui::Event::KeyPressedEvent(
                                 input.scancode as u16,
                                 input.state == ElementState::Pressed,
                             ))

@@ -1,7 +1,7 @@
 use crate::components::{PlayerControllerComponent, SpriteRenderComponent, TransformComponent};
-use crate::event::Event;
 use crate::renderer::{Camera, Renderer2D};
 use crate::scene::Scene;
+use crate::ui::Event;
 use cgmath::Vector3;
 use hecs::World;
 use std::cell::RefCell;

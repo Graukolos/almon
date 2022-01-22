@@ -1,6 +1,6 @@
-use crate::event::Event;
 use crate::renderer::{Camera, Renderer2D};
 use crate::scene::{Scene, TestScene};
+use crate::ui::Event;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;

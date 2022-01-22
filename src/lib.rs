@@ -5,10 +5,9 @@ extern crate image;
 
 mod almon;
 mod components;
-mod event;
 mod renderer;
 mod resources;
 mod scene;
-mod window;
+mod ui;
 
 pub use almon::Almon;

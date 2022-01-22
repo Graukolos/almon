@@ -1,4 +1,4 @@
-use crate::event::Event;
+use crate::ui::Event;
 use std::time::Duration;
 
 pub trait Scene {
