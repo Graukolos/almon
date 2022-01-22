@@ -57,11 +57,12 @@ impl Almon {
                             ));
                     }
                     WindowEvent::KeyboardInput { input, .. } => {
-                        if input.state == ElementState::Pressed {
-                            almon
-                                .current_scene
-                                .handle(crate::event::Event::KeyPressedEvent(input.scancode as u16))
-                        }
+                        almon
+                            .current_scene
+                            .handle(crate::event::Event::KeyPressedEvent(
+                                input.scancode as u16,
+                                input.state == ElementState::Pressed,
+                            ))
                     }
                     _ => {}
                 },

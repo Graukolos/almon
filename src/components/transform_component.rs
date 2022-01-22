@@ -21,6 +21,14 @@ impl TransformComponent {
         self.translation * self.rotation
     }
 
+    pub fn position(&self) -> Vector3<f32> {
+        Vector3::new(
+            self.translation.w.x,
+            self.translation.w.y,
+            self.translation.w.z,
+        )
+    }
+
     pub fn translate(&mut self, shift: Vector3<f32>) {
         self.translation = Matrix4::from_translation(shift) * self.translation;
     }
