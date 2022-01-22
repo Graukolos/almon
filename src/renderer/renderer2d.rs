@@ -56,7 +56,7 @@ impl Renderer2D {
         let uniforms = uniform! {
             view_projection: view_projection,
             model: model,
-            tex: &*tex,
+            tex: tex.sampled().magnify_filter(glium::uniforms::MagnifySamplerFilter::Nearest),
         };
         frame
             .draw(
