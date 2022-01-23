@@ -1,6 +1,7 @@
 [package]
 name = "almon"
 version = "0.1.0"
+authors = ["Max Erdelmeier"]
 edition = "2021"
 
 [dependencies]
