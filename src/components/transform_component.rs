@@ -2,31 +2,26 @@ use cgmath::prelude::*;
 use cgmath::{Matrix4, Rad, Vector3};
 
 pub struct TransformComponent {
-    translation: Matrix4<f32>,
+    pub translation: Matrix4<f32>,
     rotation: Matrix4<f32>,
+    pub scale: Matrix4<f32>,
 }
 
 impl TransformComponent {
-    pub fn new() -> Self {
+    pub fn new(dimensions: (f32, f32)) -> Self {
         let translation = Matrix4::identity();
         let rotation = Matrix4::identity();
+        let scale = Matrix4::from_nonuniform_scale(dimensions.0, dimensions.1, 1.0);
 
         Self {
             translation,
             rotation,
+            scale,
         }
     }
 
     pub fn transform(&self) -> Matrix4<f32> {
         self.translation * self.rotation
-    }
-
-    pub fn position(&self) -> Vector3<f32> {
-        Vector3::new(
-            self.translation.w.x,
-            self.translation.w.y,
-            self.translation.w.z,
-        )
     }
 
     pub fn translate(&mut self, shift: Vector3<f32>) {

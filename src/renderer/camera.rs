@@ -1,3 +1,4 @@
+use crate::components::TransformComponent;
 use cgmath::prelude::*;
 use cgmath::{Matrix4, Vector3};
 
@@ -24,8 +25,13 @@ impl Camera {
         self.view_projection_matrix
     }
 
-    pub fn set_position(&mut self, position: Vector3<f32>) {
-        self.view_matrix = Matrix4::from_translation(position).invert().unwrap();
+    pub fn set_position(&mut self, transform_component: &TransformComponent) {
+        let middle = transform_component
+            .scale
+            .transform_vector(Vector3::new(0.5, 0.5, 0.0));
+        self.view_matrix = (transform_component.translation * Matrix4::from_translation(middle))
+            .invert()
+            .unwrap();
         self.view_projection_matrix = self.projection_matrix * self.view_matrix;
     }
 

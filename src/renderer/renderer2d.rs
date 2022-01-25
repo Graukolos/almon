@@ -71,7 +71,7 @@ impl Renderer2D {
             .get_view_projection_matrix()
             .into();
         let model: [[f32; 4]; 4] =
-            (transform_component.transform() * sprite_render_component.scale).into();
+            (transform_component.transform() * transform_component.scale).into();
         let uniforms = uniform! {
             view_projection: view_projection,
             model: model,

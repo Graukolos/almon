@@ -20,22 +20,22 @@ impl TestScene {
     pub fn new(renderer: Rc<RefCell<Renderer2D>>) -> TestScene {
         let mut world = World::new();
         let mut dirtblock1 = (
-            SpriteRenderComponent::new("dirt", (1.0, 1.0)),
-            TransformComponent::new(),
+            SpriteRenderComponent::new("dirt"),
+            TransformComponent::new((1.0, 1.0)),
         );
         dirtblock1.1.translate(Vector3::new(-0.5, -0.5, -0.5));
         world.spawn(dirtblock1);
 
         let mut dirtblock2 = (
-            SpriteRenderComponent::new("dirt", (1.0, 1.0)),
-            TransformComponent::new(),
+            SpriteRenderComponent::new("dirt"),
+            TransformComponent::new((1.0, 1.0)),
         );
         dirtblock2.1.translate(Vector3::new(0.5, -0.5, -0.5));
         world.spawn(dirtblock2);
 
         let player = (
-            SpriteRenderComponent::new("player", (1.0, 2.0)),
-            TransformComponent::new(),
+            SpriteRenderComponent::new("player"),
+            TransformComponent::new((1.0, 2.0)),
             PlayerControllerComponent::new(),
         );
         world.spawn(player);
@@ -114,7 +114,7 @@ impl TestScene {
             self.camera
                 .as_mut()
                 .unwrap()
-                .set_position(transform_component.position())
+                .set_position(transform_component)
         }
     }
 }
