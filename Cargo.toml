@@ -10,3 +10,5 @@ cgmath = "0.18.0"
 image = "0.23.14"
 hecs = "0.7.3"
 ahash = "0.7.6"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_yaml = "0.8.23"

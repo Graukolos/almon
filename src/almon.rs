@@ -1,6 +1,6 @@
 use crate::renderer::Renderer2D;
 use crate::scene::{MenuScene, Scene};
-use crate::ui::Window;
+use crate::ui::{Config, Window};
 use glium::glutin::event::{ElementState, Event, WindowEvent};
 use glium::glutin::event_loop::ControlFlow;
 use std::cell::RefCell;
@@ -10,17 +10,20 @@ use std::time::{Duration, Instant};
 pub struct Almon {
     window: Window,
     current_scene: Box<dyn Scene>,
+    config: Config,
 }
 
 impl Almon {
     pub fn new() -> Almon {
-        let window = Window::new(800, 600);
+        let config = Config::load(String::from("config.yml"));
+        let window = Window::new(config);
         let renderer = Rc::new(RefCell::new(Renderer2D::new(window.get_display())));
         let current_scene = Box::new(MenuScene::new(renderer));
 
         Almon {
             window,
             current_scene,
+            config,
         }
     }
 
@@ -37,6 +40,7 @@ impl Almon {
             match ev {
                 Event::WindowEvent { event, .. } => match event {
                     WindowEvent::CloseRequested => {
+                        almon.config.save(String::from("config.yml"));
                         *control_flow = ControlFlow::Exit;
                     }
                     WindowEvent::Resized(physical_size) => {
