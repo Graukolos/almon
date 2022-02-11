@@ -19,17 +19,10 @@ impl Config {
     }
 
     pub fn save(&self, path: String) {
-        match OpenOptions::new()
+        if let Ok(file) = OpenOptions::new()
             .write(true)
             .create(true)
-            .open(path.as_str())
-        {
-            Ok(file) => match serde_yaml::to_writer(file, self) {
-                Ok(_) => {}
-                Err(_) => {}
-            },
-            Err(_) => {}
-        }
+            .open(path.as_str()) { if serde_yaml::to_writer(file, self).is_ok() {} }
     }
 }
 
