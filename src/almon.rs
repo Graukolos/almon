@@ -27,12 +27,12 @@ impl Almon {
         }
     }
 
-    pub fn run(mut almon: Almon) {
+    pub fn run(mut self) {
         let tickrate = 128;
         let dt = Duration::from_millis(1000 / tickrate);
         let mut accumulator = Duration::from_millis(0);
         let mut frame_start = Instant::now();
-        let event_loop = almon.window.event_loop.take().unwrap();
+        let event_loop = self.window.event_loop.take().unwrap();
 
         event_loop.run(move |ev, _, control_flow| {
             *control_flow = ControlFlow::Poll;
@@ -40,11 +40,11 @@ impl Almon {
             match ev {
                 Event::WindowEvent { event, .. } => match event {
                     WindowEvent::CloseRequested => {
-                        almon.config.save(String::from("config.yml"));
+                        self.config.save(String::from("config.yml"));
                         *control_flow = ControlFlow::Exit;
                     }
                     WindowEvent::Resized(physical_size) => {
-                        almon
+                        self
                             .current_scene
                             .handle(crate::ui::Event::WindowResizedEvent(
                                 physical_size.width as u16,
@@ -52,7 +52,7 @@ impl Almon {
                             ));
                     }
                     WindowEvent::KeyboardInput { input, .. } => {
-                        almon
+                        self
                             .current_scene
                             .handle(crate::ui::Event::KeyPressedEvent(
                                 input.scancode as u16,
@@ -70,13 +70,13 @@ impl Almon {
                     }
 
                     while accumulator > dt {
-                        if let Some(scene) = almon.current_scene.update(&dt) {
-                            almon.current_scene = scene;
+                        if let Some(scene) = self.current_scene.update(&dt) {
+                            self.current_scene = scene;
                         }
                         accumulator -= dt;
                     }
 
-                    almon.current_scene.render();
+                    self.current_scene.render();
                 }
                 _ => {}
             }
